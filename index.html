@@ -4,52 +4,136 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/javascript/javascript.min.js"></script>
+
+    <title>Convert px to rems</title>
     <style>
-        body {background-color: powderblue;}
+        html {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            background-color: rgb(64, 53, 56);
+            font-family: 'Roboto', sans-serif;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+        }
+        h2 {
+            color: white;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 80px;
+            background: white;
+            width: 100%;
+            left: 0;
+            padding: 50px;
+            box-sizing: border-box;
+            text-align: center;
+            -webkit-box-shadow: 0px -5px 15px -4px rgba(0,0,0,0.75);
+            -moz-box-shadow: 0px -5px 15px -4px rgba(0,0,0,0.75);
+            box-shadow: 0px -5px 15px -4px rgba(0,0,0,0.75);
+        }
         textarea {
             height: 500px;
             width: 500px;
+            border: none;
+            overflow: auto;
+            outline: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            resize: none;
+            border-radius: 4px;
+        }
+
+        button {
+            align-items: center;
+            background-color: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: .25rem;
+            box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+            box-sizing: border-box;
+            color: rgba(0, 0, 0, 0.85);
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 16px;
+            font-weight: 600;
+            justify-content: center;
+            line-height: 1.25;
+            margin: 0;
+            min-height: 3rem;
+            padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+            position: relative;
+            text-decoration: none;
+            transition: all 250ms;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            vertical-align: baseline;
+            width: auto;
+            margin: 0 20px;
+        }
+        button:hover,
+        button:focus {
+            border-color: rgba(0, 0, 0, 0.15);
+            box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+            color: rgba(0, 0, 0, 0.65);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            background-color: #F0F0F1;
+            border-color: rgba(0, 0, 0, 0.15);
+            box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+            color: rgba(0, 0, 0, 0.65);
+            transform: translateY(0);
         }
         </style>
 </head>
 <body>
+    <h2>Converts px to rems without changing media queries</h2>
     <div class="container">
-        <textarea type="text" class="input"></textarea>
-        <button onClick="convertPxToRem()">Convert px to rem</button>
-        <textarea type="text" class="output"></textarea>
+        <textarea class="css-input"></textarea>
+        <button onClick="convertPxToRem()">Convert px to rem 2.0</button>
+        <textarea class="css-output"></textarea>
     </div>
-    <div class="container">
-        <h2>CONVERT PX TO REMS WITHOUT MEDIA QUERIES</h2>
-        <textarea type="text" class="inputMediaQuery"></textarea>
-        <button onClick="convertPxToRem2()">Convert px to rem 2.0</button>
-        <textarea type="text" class="outputMediaQuery"></textarea>
+    <div class="footer">
+        <p>Introducing the PX to REM Converter: 
+            A simple and efficient tool that allows you to effortlessly convert pixel values to rem units for your CSS styles. 
+            With a user-friendly interface, just paste your CSS code into the left box, and instantly see the converted output in the right box. 
+            Our client-side converter ensures quick and conversions and doesn't upload any code.
+            Plus, it's made to exclude media queries, as using pixels in media queries is often the preferred choice for better control over responsive layouts. 
+            Simplify your CSS workflow with our PX to REM Converter today!
+        </p>
     </div>
-</body>
+</body> 
 </html>
 
 <script>
-
     function convertPxToRem() {
-        const inputContent = document.querySelector('.input').value
-        const outputContent = document.querySelector('.output')
-        
-        
-        // Match "px" values that are not within media queries
-        const rgx = /(\d+\.?\d*)px(?!.*\b@media\b)/g;
-
-        let convertedInput = inputContent.replace(rgx, (match, pxValue) => {
-            const remValue = (parseFloat(pxValue) / 10) + 'rem';
-            return remValue;
-        });
-
-        outputContent.value = convertedInput
-    }
-
-    function convertPxToRem2() {
-        const inputCSS = document.querySelector('.inputMediaQuery').value
-        const outputContent = document.querySelector('.outputMediaQuery')
-        
+        const inputCss = document.querySelector('.css-input').value
+        const outputCss = document.querySelector('.css-output')
         
         const regex = /(\d+)px(?![\w-])/g;
 
@@ -58,7 +142,7 @@
             return remValue + "rem";
         }
 
-        const lines = inputCSS.split("\n");
+        const lines = inputCss.split("\n");
 
         const transformedCSS = lines.map((line) => {
             if (line.includes("@media")) {
@@ -69,6 +153,6 @@
         }).join("\n");
 
 
-        outputContent.value = transformedCSS
+        outputCss.value = transformedCSS
     }
 </script>
