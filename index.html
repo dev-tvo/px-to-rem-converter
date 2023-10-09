@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {background-color: powderblue;}
+        textarea {
+            height: 500px;
+            width: 500px;
+        }
+        </style>
+</head>
+<body>
+    <div class="container">
+        <textarea type="text" class="input"></textarea>
+        <button onClick="convertPxToRem()">Convert px to rem</button>
+        <textarea type="text" class="output"></textarea>
+    </div>
+    <div class="container">
+        <h2>CONVERT PX TO REMS WITHOUT MEDIA QUERIES</h2>
+        <textarea type="text" class="inputMediaQuery"></textarea>
+        <button onClick="convertPxToRem2()">Convert px to rem 2.0</button>
+        <textarea type="text" class="outputMediaQuery"></textarea>
+    </div>
+</body>
+</html>
+
+<script>
+
+    function convertPxToRem() {
+        const inputContent = document.querySelector('.input').value
+        const outputContent = document.querySelector('.output')
+        
+        
+        // Match "px" values that are not within media queries
+        const rgx = /(\d+\.?\d*)px(?!.*\b@media\b)/g;
+
+        let convertedInput = inputContent.replace(rgx, (match, pxValue) => {
+            const remValue = (parseFloat(pxValue) / 10) + 'rem';
+            return remValue;
+        });
+
+        outputContent.value = convertedInput
+    }
+
+    function convertPxToRem2() {
+        const inputCSS = document.querySelector('.inputMediaQuery').value
+        const outputContent = document.querySelector('.outputMediaQuery')
+        
+        
+        const regex = /(\d+)px(?![\w-])/g;
+
+        function replacePxWithRem(match, pxValue) {
+            const remValue = pxValue / 10;
+            return remValue + "rem";
+        }
+
+        const lines = inputCSS.split("\n");
+
+        const transformedCSS = lines.map((line) => {
+            if (line.includes("@media")) {
+                return line;
+            }
+
+            return line.replace(regex, replacePxWithRem);
+        }).join("\n");
+
+
+        outputContent.value = transformedCSS
+    }
+</script>
